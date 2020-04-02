@@ -1,4 +1,4 @@
-module github.com/wavefrontHQ/wavefront-lambda-go
+module github.com/wavefronthq/wavefront-lambda-go
 
 go 1.14
 
