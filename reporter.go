@@ -9,7 +9,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambdacontext"
 	"github.com/rcrowley/go-metrics"
-	"github.com/wavefronthq/go-metrics-wavefront"
+	wavefront "github.com/wavefronthq/go-metrics-wavefront"
 )
 
 // incrementCounter increments the counter by the given value if report is true
@@ -48,6 +48,18 @@ func registerStandardLambdaMetrics() {
 	// Register duration gauge.
 	durationGauge = metrics.NewGaugeFloat64()
 	wavefront.RegisterMetric(getStandardLambdaMetricName("duration"), durationGauge, nil)
+
+	// Register memTotal counter.
+	memTotalGauge = metrics.NewGaugeFloat64()
+	wavefront.RegisterMetric(getStandardLambdaMetricName("mem.total"), memTotalGauge, nil)
+
+	// Register memUsed counter.
+	memUsedGauge = metrics.NewGaugeFloat64()
+	wavefront.RegisterMetric(getStandardLambdaMetricName("mem.used"), memUsedGauge, nil)
+
+	// Register memUsedPercentage counter.
+	memUsedPercentageGauge = metrics.NewGaugeFloat64()
+	wavefront.RegisterMetric(getStandardLambdaMetricName("mem.percentage"), memUsedPercentageGauge, nil)
 }
 
 // reportMetrics sends the collected metrics in the registry to Wavefront. With each metric,

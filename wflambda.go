@@ -37,6 +37,9 @@ var (
 	csCounter                 metrics.Counter
 	invocationsCounter        metrics.Counter
 	errCounter                metrics.Counter
+	memTotalGauge             metrics.GaugeFloat64
+	memUsedGauge              metrics.GaugeFloat64
+	memUsedPercentageGauge    metrics.GaugeFloat64
 	durationGauge             metrics.GaugeFloat64
 )
 
@@ -111,6 +114,11 @@ func lambdaHandlerWrapper(ctx context.Context, payload json.RawMessage) (respons
 	incrementCounter(invocationsCounter, 1, reportStandardMetrics)
 	start := time.Now()
 	lambdaResponse := handlerValue.Call(args)
+	// set memory usage
+	memstats := getMemoryStats()
+	updateGaugeFloat64(memTotalGauge, memstats.Total, reportStandardMetrics)
+	updateGaugeFloat64(memUsedGauge, memstats.Used, reportStandardMetrics)
+	updateGaugeFloat64(memUsedPercentageGauge, memstats.UsedPercentage, reportStandardMetrics)
 	executionDuration := time.Since(start)
 	// Set duration gauge value in milliseconds.
 	updateGaugeFloat64(durationGauge, executionDuration.Seconds()*1000, reportStandardMetrics)
